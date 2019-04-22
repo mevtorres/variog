@@ -62,7 +62,7 @@ j=1;
      
 
   %modificada para varios bgs
-     a=[z(j,1)-z(j+1:n,1),((x(j)-x((j+1):n)).^2+(y(j)-y((j+1):n)).^2).^0.5];
+     a=[  z(j,1)-z(j+1:n,1),  ( (x(j)-x((j+1):n)).^2+(y(j)-y((j+1):n)).^2 ).^0.5];
 
      #Encontra os índices "i"das componetes que estão
 
@@ -71,7 +71,8 @@ j=1;
      % componentes encontradas
 
      i=find( a(:,2) <(h+tol) & a(:,2) > (h-tol));
-     s=sum((a(i,1)).^2)+s;
+     s=sum((a(i,1)).^2)+s;  nao presiso do quadrado pois ja fiz durante o caluculo da matriz\
+     
      m=length(a(i,1)~=0)+m;
    end
 gama(ind,2)=s/m;
@@ -89,11 +90,12 @@ hdist=list()
 n=length(BDGC$X)
 
 for (i in 1:n){ 
-  hdist[[i]]=sqrt((BDGC$X-BDGC$X[i])^2+(BDGC$Y-BDGC$Y[i])^2+(BDGC$Z-BDGC$Z[i])^2)
-  
+  hdistz=cbind((BDGC$Z-BDGC$Z[i])^2)
+  hdistxy=cbind(sqrt((BDGC$Y-BDGC$Y[i])^2+(BDGC$X-BDGC$X[i])^2) )
+  hdist[[i]]=cbind(hdistz,hdistxy)
 }
 hdistv=do.call(rbind,hdist)  
-rm(hdist)
+#rm(hdist)
 ```
 
 
