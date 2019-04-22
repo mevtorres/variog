@@ -40,11 +40,13 @@ hi=500
 #increment0
 hinc=50
 hf=12000
-tol=100
+tolerancia=100
 n=length(BDGC$X)
 ind=1
-
-
+#vetor de incrementos
+hrange=seq(from=hi,to=hf,by=hinc)
+#comprimento do vetor de inclementos
+nn=length(hrange) 
 
 ```
 
@@ -84,17 +86,28 @@ end
 ```{r}
 #a101=dist(as.matrix(BDGC), method = "euclidean", diag = FALSE, upper = FALSE, p = 2)
 #a102=as.matrix(BDGC)
-
+gama = matrix(data=0,nrow=nn,ncol=2)
 #df$distance <- apply(df, 1, function(x) dist(matrix(x, nrow = 2, byrow = TRUE)))
 hdist=list()
 n=length(BDGC$X)
-
+for (j in 1:nn) {
+  h=hrange[j]
+  s=0
+  m=0
 for (i in 1:n){ 
   hdistz=cbind((BDGC$Z-BDGC$Z[i])^2)
   hdistxy=cbind(sqrt((BDGC$Y-BDGC$Y[i])^2+(BDGC$X-BDGC$X[i])^2) )
   hdist[[i]]=cbind(hdistz,hdistxy)
 }
-hdistv=do.call(rbind,hdist)  
+hdistv=do.call(rbind,hdist) 
+hdistv=as.data.frame(hdistv)
+htemp=subset(hdistv,(hdistv$V2 > h-tolerancia) & (hdistv$V2 < h+tolerancia) )
+htemp1=subset(htemp,htemp$V1!=0)
+s=sum(htemp$V1)
+m=length(htemp1$V1)
+gama[j,1]=s/m
+gama[j,2]=hrange[j]
+}
 #rm(hdist)
 ```
 
