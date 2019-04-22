@@ -1,0 +1,141 @@
+---
+title: "Variograma"
+output: html_notebook
+---
+
+Conversao do programa da minha tese variograma.m para R
+com correçoes ao codigo, onde suspeito estar com erro
+
+
+
+primeira parte
+
+[filename1,filepath1]=uigetfile({'*.*','All Files'},...'Select Data File 1');
+cd(filepath1);
+BGDC=load(filename1);
+filename2=strrep(filename1,'.','_');
+x = BGDC(:,1);
+y = BGDC(:,2);
+z = BGDC(:,3);
+DENSIDADE=2.100
+hi=500
+hinc=input('hinc=');
+%hf=input('hf=');
+hf=12000
+tol=input('tol= lag ');
+[L,M]=size(BGDC);
+n=L;
+ind=1;
+
+
+```{r}
+options(digits=12)
+filename1 <- file.choose()
+BDGC  <- read.table(filename1,header=FALSE,sep="\t",dec=".",numerals="no.loss")
+#BDGC  <- scan(filename1,sep="\t",dec=".")
+colnames(BDGC) =c("X","Y","Z")
+#variaveis
+DENSIDADE=2.100
+hi=500
+#increment0
+hinc=50
+hf=12000
+tol=100
+n=length(BDGC$X)
+ind=1
+
+
+
+```
+
+
+
+for h=hi:hinc:hf;
+s=0;
+m=0;
+j=1;
+
+% Caulcula o valor do variograma para o "lag"h.
+   for j=1:n-1,
+     % Calcula vetorizado as distancias entre os pontos e as
+     % respectivas diferencas entre as grandezas nestes pontos.
+     
+
+  %modificada para varios bgs
+     a=[z(j,1)-z(j+1:n,1),((x(j)-x((j+1):n)).^2+(y(j)-y((j+1):n)).^2).^0.5];
+
+     #Encontra os índices "i"das componetes que estão
+
+     % dentro do "lag" tol, e soma os quadrados das
+
+     % componentes encontradas
+
+     i=find( a(:,2) <(h+tol) & a(:,2) > (h-tol));
+     s=sum((a(i,1)).^2)+s;
+     m=length(a(i,1)~=0)+m;
+   end
+gama(ind,2)=s/m;
+gama(ind,1)=h;
+ind=ind+1;
+end
+
+
+```{r}
+#a101=dist(as.matrix(BDGC), method = "euclidean", diag = FALSE, upper = FALSE, p = 2)
+#a102=as.matrix(BDGC)
+
+#df$distance <- apply(df, 1, function(x) dist(matrix(x, nrow = 2, byrow = TRUE)))
+hdist=list()
+n=length(BDGC$X)
+
+for (i in 1:n){ 
+  hdist[[i]]=sqrt((BDGC$X-BDGC$X[i])^2+(BDGC$Y-BDGC$Y[i])^2+(BDGC$Z-BDGC$Z[i])^2)
+  
+}
+hdistv=do.call(rbind,hdist)  
+rm(hdist)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
